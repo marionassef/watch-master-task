@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\BuyItemDTO;
+use App\DTO\GetCartDTO;
+use App\DTO\StoreCartDTO;
+use App\Helpers\CustomResponse;
+use App\Http\Requests\BuyItemRequest;
+use App\Http\Requests\GetCartRequest;
 use App\Http\Requests\StoreCartRequest;
+use App\Http\Resources\CartResource;
 use App\Services\CartService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\JsonResponse;
 
 class CartController extends Controller
 {
@@ -23,33 +28,36 @@ class CartController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\StoreCartRequest  $request
+     * @param \App\Http\Requests\StoreCartRequest $storeCartRequest
      * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\CustomQueryException
      */
-    public function store(StoreCartRequest $storeCartRequest)
+    public function store(StoreCartRequest $storeCartRequest): JsonResponse
     {
-        Redis::set('name', 'MARIO');
-
-        return Response::json(['name' => Redis::get('name')]);
+        $this->cartService->store(StoreCartDTO::fromRequest($storeCartRequest->validated()));
+        return CustomResponse::successResponse(__('success'));
     }
 
     /**
-     * @param AdminDetailsRequest $request
+     * @param \App\Http\Requests\GetCartRequest $getCartRequest
      * @return JsonResponse
      * @throws \App\Exceptions\CustomQueryException
+     * @throws \App\Exceptions\CustomValidationException
      */
-    public function details(AdminDetailsRequest $request): JsonResponse
+    public function getCart(GetCartRequest $getCartRequest): JsonResponse
     {
-        return CustomResponse::successResponse(__('success'), $this->adminService->getOneBy($request->validated()));
+        return CustomResponse::successResponse(__('success'),
+            new CartResource($this->cartService->getCart(GetCartDTO::fromRequest($getCartRequest->validated()))));
     }
 
     /**
-     * @param AdminUpdateRequest $request
+     * @param BuyItemRequest $buyItemRequest
      * @return JsonResponse
      * @throws \App\Exceptions\CustomQueryException
      */
-    public function update(AdminUpdateRequest $request): JsonResponse
+    public function buyProduct(BuyItemRequest $buyItemRequest): JsonResponse
     {
-        return CustomResponse::successResponse(__('success'), $this->adminService->update($request->validated()));
+        $this->cartService->buyProduct(BuyItemDTO::fromRequest($buyItemRequest->validated()));
+        return CustomResponse::successResponse(__('success'));
     }
 }

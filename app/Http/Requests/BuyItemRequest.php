@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Constants\ProductTypes;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class BuyProductRequest extends FormRequest
+class BuyItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +24,7 @@ class BuyProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => 'bail|required|string|max:50',
+            'user_id' => 'bail|required|string|max:50',
         ];
     }
 }

@@ -4,14 +4,14 @@ namespace App\DTO;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class BuyProductDTO extends DataTransferObject
+class BuyItemDTO extends DataTransferObject
 {
-    public $product_id;
+    public $user_id;
 
     public static function fromRequest(array $parameters = []): self
     {
         return new self([
-            'product_id' => $parameters['product_id'],
+            'user_id' => $parameters['user_id'],
         ]);
     }
 

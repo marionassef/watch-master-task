@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Constants\ProductStatus;
 use App\Constants\ProductTypes;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,7 +27,14 @@ class StoreCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => 'bail|required|string|max:50',
-        ];
+            'watch_id' => 'bail|required|string|max:50',
+            'brand' => 'bail|required|string|max:500',
+            'series' => 'bail|required|string|max:500',
+            'model' => 'bail|required|string|max:500',
+            'bracelet_material' => 'bail|required|string|max:50',
+            'case_size' => 'bail|required|numeric',
+            'dial_color' => 'bail|required|string|max:500',
+            'status' => 'bail|required|numeric|'. Rule::in([ProductStatus::AVAILABLE, ProductStatus::SOLD]),
+            ];
     }
 }

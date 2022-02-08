@@ -15,5 +15,6 @@ return [
 
     'success' => 'success',
     'product_sold_out' => 'Sorry, Product sold out',
+    'cart_not_found' => 'Sorry, No Cart found',
 
 ];

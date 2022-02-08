@@ -14,7 +14,7 @@ class CustomResponse
      * @param int $status
      * @return JsonResponse
      */
-    public static function successResponse($message, array $data = [], int $status = 200): JsonResponse
+    public static function successResponse($message, $data = [], int $status = 200): JsonResponse
     {
         return response()->json(['message' => $message, 'data' => $data], $status);
     }
