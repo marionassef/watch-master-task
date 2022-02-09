@@ -34,8 +34,7 @@ class CartController extends Controller
      */
     public function store(StoreCartRequest $storeCartRequest): JsonResponse
     {
-        $this->cartService->store(StoreCartDTO::fromRequest($storeCartRequest->validated()));
-        return CustomResponse::successResponse(__('success'));
+        return CustomResponse::successResponse(__('success'), new CartResource($this->cartService->store(StoreCartDTO::fromRequest($storeCartRequest->validated()))));
     }
 
     /**

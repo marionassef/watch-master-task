@@ -14,7 +14,7 @@ class RedisAbstractRepository implements AbstractRepositoryInterface
      * @return void
      * @throws \App\Exceptions\CustomQueryException
      */
-    public function store($data): void
+    public function store($data)
     {
         try {
              Redis::set($data);

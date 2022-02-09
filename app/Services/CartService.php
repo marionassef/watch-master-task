@@ -24,18 +24,18 @@ class CartService
     /**
      * @throws \App\Exceptions\CustomQueryException
      */
-    public function store(StoreCartDTO $storeProductDTO): void
+    public function store(StoreCartDTO $storeProductDTO): object
     {
-        $this->cartRepository->store($storeProductDTO);
+        return $this->cartRepository->store($storeProductDTO);
     }
 
     /**
      * @param \App\DTO\GetCartDTO $getCartDTO
-     * @return mixed
+     * @return object
      * @throws \App\Exceptions\CustomQueryException
      * @throws \App\Exceptions\CustomValidationException
      */
-    public function getCart(GetCartDTO $getCartDTO)
+    public function getCart(GetCartDTO $getCartDTO): object
     {
         $listOfCarts = $this->cartRepository->findOneBy($this->cartRepository::CARTS);
         foreach ($listOfCarts as $product) {

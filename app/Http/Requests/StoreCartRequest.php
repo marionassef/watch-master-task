@@ -33,7 +33,7 @@ class StoreCartRequest extends FormRequest
             'model' => 'bail|required|string|max:500',
             'bracelet_material' => 'bail|required|string|max:50',
             'case_size' => 'bail|required|numeric',
-            'dial_color' => 'bail|required|string|max:500',
+            'dial_color' => 'bail|required|array|max:500',
             'status' => 'bail|required|numeric|'. Rule::in([ProductStatus::AVAILABLE, ProductStatus::SOLD]),
             ];
     }

@@ -16,6 +16,7 @@ class CartResource extends JsonResource
     {
         return [
             'watch_id' => $this->watch_id,
+            'user_id' => $this->user_id,
             'brand' => $this->brand,
             'series' => $this->series,
             'model' => $this->model,

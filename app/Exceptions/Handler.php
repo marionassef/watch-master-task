@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Helpers\CustomResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,6 +45,10 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof CustomValidationException) {
             return CustomResponse::errorResponse($exception->getMessage());
+        }
+
+        if ($exception instanceof ValidationException) {
+            return CustomResponse::errorResponse($exception->validator->errors());
         }
         return parent::render($request, $exception);
     }
