@@ -6,6 +6,8 @@ namespace App\Repositories;
 
 interface AbstractRepositoryInterface
 {
+    public function list();
+
     public function store($data);
 
     public function update($item, $data);

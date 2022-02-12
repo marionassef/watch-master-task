@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Constants\ProductStatus;
+use App\Constants\ItemStatus;
 use App\DTO\BuyItemDTO;
 use App\DTO\GetCartDTO;
 use App\DTO\StoreCartDTO;
@@ -22,7 +22,6 @@ class CartService
     }
 
     /**
-     * @throws \App\Exceptions\CustomQueryException
      */
     public function store(StoreCartDTO $storeProductDTO): object
     {
@@ -35,38 +34,39 @@ class CartService
      * @throws \App\Exceptions\CustomQueryException
      * @throws \App\Exceptions\CustomValidationException
      */
-    public function getCart(GetCartDTO $getCartDTO): object
+    public function details(GetCartDTO $getCartDTO): object
     {
-        $listOfCarts = $this->cartRepository->findOneBy($this->cartRepository::CARTS);
-        foreach ($listOfCarts as $product) {
-            if ($product['user_id'] === $getCartDTO->user_id) {
-                return (object)$product;
-            }
+        $cart = $this->cartRepository->findOneBy($getCartDTO->user_id);
+        if (!$cart) {
+            throw new CustomValidationException(__("messages.cart_not_found"));
         }
-        throw new CustomValidationException(__("messages.cart_not_found"));
+        return (object)$cart;
     }
 
     /**
      * @throws \App\Exceptions\CustomQueryException
+     * @throws \App\Exceptions\CustomValidationException
      */
-    public function buyProduct(BuyItemDTO $buyItemDTO): void
+    public function buyItem(BuyItemDTO $buyItemDTO): void
     {
-        $listOfCarts = $this->cartRepository->findOneBy($this->cartRepository::CARTS);
-        $watchId = null;
-        foreach ($listOfCarts as $key => $cart) {
-            if ($cart['user_id'] === $buyItemDTO->user_id) {
-                $watchId = $cart['watch_id'];
-                unset($listOfCarts[$key]);
-                $this->cartRepository->updateCarts($listOfCarts);
-                break;
-            }
+        $cart = $this->cartRepository->findOneBy($buyItemDTO->user_id);
+        if (!$cart) {
+            throw new CustomValidationException(__("messages.cart_not_found"));
         }
-        foreach ($listOfCarts as $key => $cart) {
+
+        if ($cart['status'] === ItemStatus::SOLD) {
+            throw new CustomValidationException(__("messages.item_sold_out"));
+        }
+        $watchId = $cart['watch_id'];
+        $this->cartRepository->delete($buyItemDTO->user_id);
+
+        $listOfCarts = $this->cartRepository->list();
+        foreach ($listOfCarts as $key) {
+            $keyWithoutPrefix = substr($key, strpos($key, 'db_') + 3);
+            $cart = $this->cartRepository->findOneBy($keyWithoutPrefix);
             if ($cart['watch_id'] === $watchId) {
-                unset($listOfCarts[$key]);
-                $cart['status'] = ProductStatus::SOLD;
-                $listOfCarts[] = (object)$cart;
-                $this->cartRepository->updateCarts($listOfCarts);
+                $cart['status'] = ItemStatus::SOLD;
+                $this->cartRepository->updateCarts($cart['user_id'], $cart);
             }
         }
     }

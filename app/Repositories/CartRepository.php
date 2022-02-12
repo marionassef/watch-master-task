@@ -7,39 +7,26 @@ use Illuminate\Support\Str;
 
 class CartRepository extends RedisAbstractRepository
 {
-    public const CARTS = "carts";
-
     /**
-     * @param $data
-     * @throws \App\Exceptions\CustomQueryException
+     * @param \App\DTO\StoreCartDTO $storeCartDTO
+     * @return object
      */
-    public function store($data): object
+    public function store($storeCartDTO): object
     {
-        $data->user_id = (string) Str::uuid();
-        $carts = $this->findOneBy(self::CARTS);
-        $carts = $this->handleInitialCase($carts);
-        $cart = (object)$data->toArray();
-        $carts[] = $cart;
-        $this->updateCarts($carts);
+        $userId = Str::random(32);
+        $cart = (object)$storeCartDTO->toArray();
+        $cart->user_id = $userId;
+        $this->updateCarts($userId, $cart);
         return $cart;
     }
 
     /**
+     * @param $userId
      * @param $data
      * @return void
      */
-    public function updateCarts($data): void
+    public function updateCarts($userId, $data): void
     {
-        Redis::set(self::CARTS, json_encode($data));
-    }
-
-    /**
-     * @throws \App\Exceptions\CustomQueryException
-     */
-    private function handleInitialCase($carts){
-        if(!$carts){
-            Redis::set(self::CARTS, json_encode([]));
-        }
-        return $this->findOneBy(self::CARTS);
+        Redis::set($userId, json_encode($data));
     }
 }

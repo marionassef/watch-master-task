@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-class ProductStatus
+class ItemStatus
 {
     public const AVAILABLE = 1;
     public const SOLD = 0;

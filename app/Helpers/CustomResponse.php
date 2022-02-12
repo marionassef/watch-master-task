@@ -10,7 +10,7 @@ class CustomResponse
 {
     /**
      * @param $message
-     * @param array $data
+     * @param $data
      * @param int $status
      * @return JsonResponse
      */

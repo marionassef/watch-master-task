@@ -34,7 +34,7 @@ class CartController extends Controller
      */
     public function store(StoreCartRequest $storeCartRequest): JsonResponse
     {
-        return CustomResponse::successResponse(__('success'), new CartResource($this->cartService->store(StoreCartDTO::fromRequest($storeCartRequest->validated()))));
+        return CustomResponse::successResponse(__('messages.success'), new CartResource($this->cartService->store(StoreCartDTO::fromRequest($storeCartRequest->validated()))));
     }
 
     /**
@@ -43,20 +43,20 @@ class CartController extends Controller
      * @throws \App\Exceptions\CustomQueryException
      * @throws \App\Exceptions\CustomValidationException
      */
-    public function getCart(GetCartRequest $getCartRequest): JsonResponse
+    public function details(GetCartRequest $getCartRequest): JsonResponse
     {
-        return CustomResponse::successResponse(__('success'),
-            new CartResource($this->cartService->getCart(GetCartDTO::fromRequest($getCartRequest->validated()))));
+        return CustomResponse::successResponse(__('messages.success'),
+            new CartResource($this->cartService->details(GetCartDTO::fromRequest($getCartRequest->validated()))));
     }
 
     /**
      * @param BuyItemRequest $buyItemRequest
      * @return JsonResponse
-     * @throws \App\Exceptions\CustomQueryException
+     * @throws \App\Exceptions\CustomQueryException|\App\Exceptions\CustomValidationException
      */
-    public function buyProduct(BuyItemRequest $buyItemRequest): JsonResponse
+    public function buyItem(BuyItemRequest $buyItemRequest): JsonResponse
     {
-        $this->cartService->buyProduct(BuyItemDTO::fromRequest($buyItemRequest->validated()));
-        return CustomResponse::successResponse(__('success'));
+        $this->cartService->buyItem(BuyItemDTO::fromRequest($buyItemRequest->validated()));
+        return CustomResponse::successResponse(__('messages.success'));
     }
 }

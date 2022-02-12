@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('cart/store', [CartController::class, 'store']);
-Route::post('cart/get', [CartController::class, 'getCart']);
-Route::post('product/buy', [CartController::class, 'buyProduct']);
+#### Cart Routes
+Route::prefix('v1/cart')->group(function () {
+    Route::post('store', [CartController::class, 'store'])->name('cart.store');
+    Route::get('details/{user_id}', [CartController::class, 'details'])->name('cart.details');
+    Route::post('buy', [CartController::class, 'buyItem'])->name('cart.buy.item');
+});

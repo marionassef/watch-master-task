@@ -10,8 +10,20 @@ use Illuminate\Support\Facades\Redis;
 class RedisAbstractRepository implements AbstractRepositoryInterface
 {
     /**
+     * @throws \App\Exceptions\CustomQueryException
+     */
+    public function list()
+    {
+        try {
+            return Redis::keys('*');
+        } catch (QueryException $exception) {
+            Log::debug($exception);
+            throw new CustomQueryException($exception->getMessage());
+        }
+    }
+
+    /**
      * @param $data
-     * @return void
      * @throws \App\Exceptions\CustomQueryException
      */
     public function store($data)
@@ -61,7 +73,7 @@ class RedisAbstractRepository implements AbstractRepositoryInterface
     public function delete($key): void
     {
         try {
-          Redis::delete($key);
+          Redis::del($key);
         } catch (QueryException $exception) {
             Log::debug($exception);
             throw new CustomQueryException($exception->getMessage());

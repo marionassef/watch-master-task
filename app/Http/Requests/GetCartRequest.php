@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Constants\ProductTypes;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class GetCartRequest extends FormRequest
 {
@@ -16,6 +14,18 @@ class GetCartRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => $this->route('user_id'),
+        ]);
     }
 
     /**
